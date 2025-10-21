@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator dni do wydarzenia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 60px;
+    }
+
+    .container {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      width: 320px;
+      text-align: center;
+    }
+
+    select, input[type="date"], button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+    }
+
+
+    #blad {
+      color: red;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #wynik {
+      font-weight: bold;
+      color: #333;
+      margin-top: 15px;
+    }
+
+    #kalendarz {
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Kalkulator dni do wydarzenia</h2>
+
+    <label for="wydarzenia">Wybierz wydarzenie:</label>
+    <select id="wydarzenia">
+      <option value="">-- wybierz wydarzenie --</option>
+      <option value="2025-10-14">Dzień Edukacji Narodowej - październik 2025</option>
+      <option value="2025-11-10">Dzień wolny od zajęć dydaktycznych - listopad 2025</option>
+      <option value="2025-11-11">Narodowe Święto Niepodległości - listopad 2025</option>
+      <option value="2025-09-01">Rozpoczęcie roku szkolnego - wrzesień 2025</option>
+      <option value="2025-12-22">Zimowa przerwa świąteczna - grudzień 2025</option>
+      <option value="2026-01-01">Nowy Rok - styczeń 2026</option>
+      <option value="2026-01-06">Trzech Króli - styczeń 2026</option>
+      <option value="2026-01-09">Egzamin zawodowy INF.03 praktyczny - styczeń 2026</option>
+      <option value="2026-02-16">Ferie zimowe - luty 2026</option>
+      <option value="2026-04-02">Wiosenna przerwa świąteczna - kwiecień 2026</option>
+      <option value="2026-05-05">Matura z j. polskiego - maj 2026</option>
+      <option value="2026-05-06">Matura z matematyki - maj 2026</option>
+      <option value="2026-05-07">Matura z j. obcego - maj 2026</option>
+      <option value="2026-05-08">Egzamin zawodowy INF.03 pisemny - maj 2026</option>
+      <option value="2026-06-26">Zakończenie zajęć dydaktycznych - czerwiec 2026</option>
+      <option value="2026-06-27">Wakacje letnie - czerwiec 2026</option>
+    </select>
+
+    <button id="btn_dni_od_dzis">Dni od dziś</button>
+    <button id="btn_kalendarz">Kalendarz</button>
+
+    <div id="kalendarz">
+      <label for="data">Wybierz datę początkową:</label>
+      <input type="date" id="data">
+      <button id="Oblicz">Oblicz</button>
+    </div>
+
+    <p id="blad"></p>
+    <p id="wynik"></p>
+  </div>
+
+  <script>
+    const wydarzenia = document.getElementById("wydarzenia");
+    const blad = document.getElementById("blad");
+    const wynik = document.getElementById("wynik");
+    const kalendarz = document.getElementById("kalendarz");
+
+    // przycisk "Dni od dziś"
+    document.getElementById("btn_dni_od_dzis").addEventListener("click", () => {
+      const eventDate = wydarzenia.value;
+      if (!eventDate) {
+        showError("Wybierz wydarzenie z listy!");
+        return;
+      }
+      const today = new Date();
+      calculateDays(today, eventDate);
+    });
+
+    // przycisk "Kalendarz"
+    document.getElementById("btn_kalendarz").addEventListener("click", () => {
+      kalendarz.style.display = "block";
+      blad.textContent = "";
+      wynik.textContent = "";
+    });
+
+    // przycisk "Oblicz"
+    document.getElementById("Oblicz").addEventListener("click", () => {
+      const eventDate = wydarzenia.value;
+      const data = document.getElementById("data").value;
+
+      if (!eventDate) {
+        showError("Wybierz wydarzenie z listy");
+        return;
+      }
+      if (!data) {
+        showError("Wybierz datę początkową z kalendarza");
+        return;
+      }
+
+      calculateDays(data, eventDate);
+    });
+
+    // funkcja obliczania różnicy dni
+    function calculateDays(fromDate, toDate) {
+      blad.textContent = "";
+      const start = new Date(fromDate);
+      const end = new Date(toDate);
+      const diffTime = end - start;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        wynik.textContent = `Wydarzenie odbyło się ${Math.abs(diffDays)} dni temu.`;
+      } else if (diffDays === 0) {
+        wynik.textContent = "Wydarzenie jest dzisiaj";
+      } else {
+        wynik.textContent = `Do wydarzenia pozostało ${diffDays} dni.`;
+      }
+    }
+
+    // funkcja błędu
+    function showError(msg) {
+      blad.textContent = msg;
+      wynik.textContent = "";
+    }
+  </script>
+</body>
+</html>
